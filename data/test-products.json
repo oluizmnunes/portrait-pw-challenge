@@ -1,0 +1,65 @@
+{
+  "validProducts": [
+    {
+      "sku": "TEST-001",
+      "name": "Test Product 1",
+      "description": "Test description for product 1",
+      "price": 99.99,
+      "stock": 50,
+      "category": "Electronics",
+      "lowStockThreshold": 10
+    },
+    {
+      "sku": "TEST-002",
+      "name": "Test Product 2",
+      "description": "Test description for product 2",
+      "price": 149.99,
+      "stock": 5,
+      "category": "Hardware",
+      "lowStockThreshold": 10
+    }
+  ],
+  "invalidProducts": [
+    {
+      "sku": "",
+      "name": "Product without SKU",
+      "price": 50.00,
+      "stock": 10,
+      "expectedError": "SKU is required"
+    },
+    {
+      "sku": "NEG-001",
+      "name": "Product with negative price",
+      "price": -10.00,
+      "stock": 10,
+      "expectedError": "Price must be greater than 0"
+    },
+    {
+      "sku": "NEG-002",
+      "name": "Product with negative stock",
+      "price": 50.00,
+      "stock": -5,
+      "expectedError": "Stock cannot be negative"
+    }
+  ],
+  "testUsers": [
+    {
+      "email": "admin@test.com",
+      "password": "Admin123!",
+      "role": "admin",
+      "valid": true
+    },
+    {
+      "email": "user@test.com",
+      "password": "User123!",
+      "role": "user",
+      "valid": true
+    },
+    {
+      "email": "invalid@test.com",
+      "password": "wrongpassword",
+      "valid": false,
+      "expectedError": "Invalid email or password"
+    }
+  ]
+}
