@@ -4,7 +4,9 @@ Welcome to the QA Automation Engineer Challenge! This repository contains a simp
 
 ## 🎯 Challenge Overview
 
-Your task is to create a comprehensive end-to-end test automation suite for this Inventory Management System. The application includes authentication, product management, and inventory tracking features.
+Your task is to demonstrate your QA automation skills by creating a comprehensive Playwright test suite for this Inventory Management System. The focus is on writing robust, maintainable automated tests using Playwright and TypeScript - not on modifying the application code itself.
+
+**Note:** While you may modify the application code if you identify bugs or improvements, the primary goal is to showcase your test automation expertise through well-structured Playwright tests.
 
 ## 📋 Prerequisites
 
@@ -15,30 +17,36 @@ Your task is to create a comprehensive end-to-end test automation suite for this
 
 ## 🚀 Getting Started
 
-1. **Fork this repository** to your GitHub account
-
-2. **Clone your forked repository**:
+1. **Clone this repository**:
 ```bash
-git clone https://github.com/YOUR_USERNAME/qa-automation-challenge.git
+git clone [repository-url]
 cd qa-automation-challenge
 ```
 
-3. **Install dependencies**:
+2. **Create your own public repository** on GitHub for your solution
+
+3. **Push to your new repository**:
+```bash
+git remote set-url origin https://github.com/YOUR_USERNAME/your-solution-repo.git
+git push -u origin main
+```
+
+4. **Install dependencies**:
 ```bash
 npm install
 ```
 
-4. **Install Playwright browsers**:
+5. **Install Playwright browsers**:
 ```bash
 npx playwright install
 ```
 
-5. **Start the application**:
+6. **Start the application**:
 ```bash
 npm run dev
 ```
 
-6. **Run the example test**:
+7. **Run the example test**:
 ```bash
 npm test
 ```
@@ -71,19 +79,21 @@ npm test
 
 ## 📝 Challenge Tasks
 
+Your primary objective is to create automated tests using Playwright. Focus on demonstrating your test automation skills rather than modifying the application code.
+
 ### Level 1: Basic (Required)
 
 1. **Complete the LoginPage Page Object Model**
    - Implement the missing methods in `pages/login.page.ts`
    - Add proper waits and error handling
 
-2. **Create authentication tests**
+2. **Create authentication tests using Playwright**
    - Valid login scenarios
    - Invalid login scenarios (wrong email, wrong password, empty fields)
    - Password visibility toggle
    - Logout functionality
 
-3. **Create product management tests**
+3. **Create product management tests using Playwright**
    - Add a new product with valid data
    - Validate form field requirements
    - Test validation errors (negative price, empty required fields)
@@ -97,7 +107,7 @@ npm test
    - Create `InventoryPage` class
    - Create `DashboardPage` class
 
-5. **Create inventory tests**
+5. **Create inventory tests using Playwright**
    - Adjust stock levels (increase/decrease)
    - Validate stock cannot go below zero
    - Verify low stock alerts appear correctly
@@ -186,28 +196,29 @@ Your submission will be evaluated based on:
 
 ## 📤 Submission Guidelines
 
-1. Complete the challenge tasks in your forked repository
-2. Create a new branch called `solution`
-3. Commit your changes with clear, descriptive messages
-4. Push your solution branch to GitHub
-5. Create a Pull Request from `solution` to `main` in your fork
-6. Add a `SOLUTION.md` file describing:
-   - Your approach and decisions
-   - Any assumptions made
-   - Instructions to run your tests
-   - Challenges faced and how you solved them
-   - Ideas for improvements
+1. Complete the challenge tasks in your public repository
+2. Commit your changes with clear, descriptive messages
+3. Create a `SOLUTION.md` file in the root directory describing:
+   - Your testing approach and framework decisions
+   - Any assumptions made about the application behavior
+   - Instructions to run your test suite
+   - Test coverage strategy and prioritization
+   - Challenges faced and solutions implemented
+   - Suggestions for future test improvements
+4. Ensure all tests are passing and can be run with `npm test`
+5. Share the public repository link with us
 
 ## 🔍 Tips for Success
 
-1. Start with the example test to understand the application
-2. Focus on code quality over quantity
-3. Write clear test descriptions
+1. Start with the example test to understand the application behavior
+2. Focus on writing robust, maintainable Playwright tests
+3. Write clear test descriptions that explain what is being tested
 4. Handle both happy path and error scenarios
 5. Make tests independent and repeatable
-6. Use data-testid attributes provided in the application
-7. Comment complex logic
-8. Consider test execution time
+6. Use data-testid attributes provided in the application for stable selectors
+7. Comment complex test logic and assertions
+8. Consider test execution time and parallelization
+9. Remember: The goal is to showcase your Playwright test automation skills, not to fix application bugs (unless critical for testing)
 
 ## 🤔 Common Pitfalls to Avoid
 
