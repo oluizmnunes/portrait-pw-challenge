@@ -29,17 +29,31 @@ export class LoginPage {
 
   // TODO: Candidates should implement these methods
   async isPasswordVisible(): Promise<boolean> {
-    // Implementation needed
-    throw new Error('Method not implemented')
+    const inputType = await this.passwordInput.getAttribute('type')
+
+    return inputType === 'text'
   }
 
-  async togglePasswordVisibility() {
-    // Implementation needed
-    throw new Error('Method not implemented')
+  async togglePasswordVisibility(): Promise<void> {
+    await this.passwordInput.waitFor({ state: 'visible', timeout: 5000 })
+
+    if (!await this.isPasswordVisible()) {
+      await this.page.getByTestId('login-title').click() // Move focus away from the password field to reveal the toggle
+      await this.passwordToggle.click()
+      return
+    }
+
+    await this.passwordToggle.click()
   }
 
   async getErrorMessage(): Promise<string> {
-    // Implementation needed
-    throw new Error('Method not implemented')
+    await this.errorMessage.waitFor({ state: 'visible' })
+    const errorMessage = await this.errorMessage.textContent()
+
+    if (!errorMessage || errorMessage.trim() === '') {
+      throw new Error('Error message text is empty')
+    }
+
+    return errorMessage.trim()
   }
 }
