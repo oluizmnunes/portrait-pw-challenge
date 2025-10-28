@@ -5,6 +5,9 @@ import { Page } from '@playwright/test'
  * Useful for test isolation and cleanup
  */
 export async function resetApplicationData(page: Page) {
+  // Navigate to the page first to ensure we're in the correct context
+  await page.goto('/')
+  
   // Call the reset API endpoint
   await page.request.post('/api/reset')
 
