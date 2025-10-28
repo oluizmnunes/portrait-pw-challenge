@@ -33,9 +33,9 @@ export class LoginPage {
     return inputType === 'text'
   }
 
-  async togglePasswordVisibility() {
-    // Implementation needed
-    throw new Error('Method not implemented')
+  async togglePasswordVisibility(): Promise<void> {
+    await this.passwordInput.waitFor({ state: 'attached' })
+    await this.passwordToggle.click()
   }
 
   async getErrorMessage(): Promise<string> {
