@@ -119,22 +119,25 @@ test.describe('Product Lifecycle - Example', () => {
       await page.getByTestId('description-input').fill('Product with low inventory')
       await page.getByTestId('price-input').fill('50.00')
       await page.getByTestId('stock-input').fill('3')
-      await page.getByTestId('category-select').selectOption('Electronics')
-      await page.getByTestId('low-stock-threshold-input').fill('10')
-
-      await page.getByTestId('submit-button').click()
+      await page.getByTestId('category-input').selectOption('Electronics')
+      await page.getByTestId('threshold-input').fill('10')
+      await page.getByTestId('save-button').click()
     })
 
     await test.step('Verify low stock indicators', async () => {
-      // Check products page
+      // Check products page - stock badge should have a red background
       await page.goto('/products')
       const stockBadge = page.locator('[data-testid^="product-row-"]').filter({ hasText: 'Low Stock Product' }).locator('.bg-red-100')
       await expect(stockBadge).toBeVisible()
 
-      // Check inventory page
+      // Check inventory page - low stock alert (in yellow) should exist
       await page.goto('/inventory')
-      const lowStockSection = page.getByTestId('low-stock-items')
-      await expect(lowStockSection).toContainText('Low Stock Product')
+      const lowStockSectionText = page.getByTestId('low-stock-alert').filter({ hasText: 'running low on stock' })
+      await expect(lowStockSectionText).toContainText('running low on stock') // avoid pluralization (and possible future errors)
+
+      // Check inventory page - low stock item should have 'Low Stock' status with a red background
+      const lowStockItem = page.locator('[data-testid^="inventory-row-"]').filter({ hasText: 'Low Stock Product' }).locator('.bg-red-100')
+      await expect(lowStockItem).toContainText('Low Stock')
     })
   })
 
