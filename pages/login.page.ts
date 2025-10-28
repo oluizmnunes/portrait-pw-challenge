@@ -30,6 +30,7 @@ export class LoginPage {
   // TODO: Candidates should implement these methods
   async isPasswordVisible(): Promise<boolean> {
     const inputType = await this.passwordInput.getAttribute('type')
+
     return inputType === 'text'
   }
 
@@ -39,7 +40,13 @@ export class LoginPage {
   }
 
   async getErrorMessage(): Promise<string> {
-    // Implementation needed
-    throw new Error('Method not implemented')
+    await this.errorMessage.waitFor({ state: 'visible' })
+    const errorMessage = await this.errorMessage.textContent()
+
+    if (!errorMessage || errorMessage.trim() === '') {
+      throw new Error('Error message text is empty')
+    }
+
+    return errorMessage.trim()
   }
 }
