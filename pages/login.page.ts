@@ -37,12 +37,16 @@ export class LoginPage {
   async togglePasswordVisibility(): Promise<void> {
     await this.passwordInput.waitFor({ state: 'visible', timeout: 5000 })
 
+    // Toggle icon is only visible when password input is NOT focused
     if (!await this.isPasswordVisible()) {
-      await this.page.getByTestId('login-title').click() // Move focus away from the password field to reveal the toggle
-      await this.passwordToggle.click()
-      return
+      await this.passwordInput.evaluate((element: HTMLElement) => {
+        if (element instanceof HTMLElement) element.blur()
+      
+        return
+      })
     }
 
+    // No need to wait once click() already has its own timeout (default)
     await this.passwordToggle.click()
   }
 
