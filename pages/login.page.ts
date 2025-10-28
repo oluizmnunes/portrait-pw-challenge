@@ -29,8 +29,8 @@ export class LoginPage {
 
   // TODO: Candidates should implement these methods
   async isPasswordVisible(): Promise<boolean> {
-    // Implementation needed
-    throw new Error('Method not implemented')
+    const inputType = await this.passwordInput.getAttribute('type')
+    return inputType === 'text'
   }
 
   async togglePasswordVisibility() {
