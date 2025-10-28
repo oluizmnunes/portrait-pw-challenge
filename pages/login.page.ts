@@ -35,7 +35,14 @@ export class LoginPage {
   }
 
   async togglePasswordVisibility(): Promise<void> {
-    await this.passwordInput.waitFor({ state: 'attached' })
+    await this.passwordInput.waitFor({ state: 'visible', timeout: 5000 })
+
+    if (!await this.isPasswordVisible()) {
+      await this.page.getByTestId('login-title').click() // Move focus away from the password field to reveal the toggle
+      await this.passwordToggle.click()
+      return
+    }
+
     await this.passwordToggle.click()
   }
 
