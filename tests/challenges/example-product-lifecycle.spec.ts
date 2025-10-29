@@ -34,10 +34,10 @@ test.describe('Product Lifecycle - Example', () => {
       await page.getByTestId('description-input').fill(testProduct.description)
       await page.getByTestId('price-input').fill(testProduct.price.toString())
       await page.getByTestId('stock-input').fill(testProduct.stock.toString())
-      await page.getByTestId('category-select').selectOption(testProduct.category)
-      await page.getByTestId('low-stock-threshold-input').fill(testProduct.lowStockThreshold.toString())
+      await page.getByTestId('category-input').selectOption(testProduct.category)
+      await page.getByTestId('threshold-input').fill(testProduct.lowStockThreshold.toString())
 
-      await page.getByTestId('submit-button').click()
+      await page.getByTestId('save-button').click()
       await expect(page).toHaveURL('/products')
 
       // Verify product appears in the list
@@ -152,10 +152,10 @@ test.describe('Product Lifecycle - Example', () => {
         await page.getByTestId('description-input').fill(product.description)
         await page.getByTestId('price-input').fill(product.price.toString())
         await page.getByTestId('stock-input').fill(product.stock.toString())
-        await page.getByTestId('category-select').selectOption(product.category)
-        await page.getByTestId('low-stock-threshold-input').fill(product.lowStockThreshold.toString())
+        await page.getByTestId('category-input').selectOption(product.category)
+        await page.getByTestId('threshold-input').fill(product.lowStockThreshold.toString())
 
-        await page.getByTestId('submit-button').click()
+        await page.getByTestId('save-button').click()
         await expect(page).toHaveURL('/products')
 
         // Verify product was created
