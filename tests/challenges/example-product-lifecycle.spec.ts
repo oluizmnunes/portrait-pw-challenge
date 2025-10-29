@@ -18,7 +18,7 @@ test.describe('Product Lifecycle - Example', () => {
     await loginAsAdmin(page)
   })
 
-  test('Complete product lifecycle: Create → Edit → Adjust Stock → Delete', async ({ page }) => {
+  test.only('Complete product lifecycle: Create → Edit → Adjust Stock → Delete', async ({ page }) => {
     // Generate unique test data
     const testProduct = generateTestProduct()
 
@@ -34,15 +34,14 @@ test.describe('Product Lifecycle - Example', () => {
       await page.getByTestId('description-input').fill(testProduct.description)
       await page.getByTestId('price-input').fill(testProduct.price.toString())
       await page.getByTestId('stock-input').fill(testProduct.stock.toString())
-      await page.getByTestId('category-select').selectOption(testProduct.category)
-      await page.getByTestId('low-stock-threshold-input').fill(testProduct.lowStockThreshold.toString())
+      await page.getByTestId('category-input').selectOption(testProduct.category)
+      await page.getByTestId('threshold-input').fill(testProduct.lowStockThreshold.toString())
 
-      await page.getByTestId('submit-button').click()
+      await page.getByTestId('save-button').click()
       await expect(page).toHaveURL('/products')
 
-      // Verify product appears in the list
-      const productRow = page.getByTestId(`product-row-${testProduct.sku}`)
-      await expect(productRow).toBeVisible()
+      const productsTable = page.getByTestId('products-table');
+      await expect(productsTable.filter({ hasText: `${testProduct.sku}` })).toBeVisible();
     })
 
     // Step 2: Search for the product
@@ -62,49 +61,54 @@ test.describe('Product Lifecycle - Example', () => {
       await editButton.click()
 
       // Update product details
-      const newName = `${testProduct.name} - Updated`
-      await page.getByTestId('name-input').fill(newName)
+      const updatedProductName = `${testProduct.name} - Updated`
+      await page.getByTestId('name-input').fill(updatedProductName)
       await page.getByTestId('price-input').fill('999.99')
       await page.getByTestId('save-button').click()
 
       // Verify updates
       await expect(page).toHaveURL('/products')
-      await expect(page.getByText(newName)).toBeVisible()
+      await expect(page.getByText(updatedProductName)).toBeVisible()
       await expect(page.getByText('$999.99')).toBeVisible()
     })
 
-    // Step 4: Adjust inventory stock
+    // Step 4: Adjust its stock
     await test.step('Adjust product stock', async () => {
       await page.goto('/inventory')
 
-      // Find our product and adjust stock
-      const adjustButton = page.locator(`[data-testid^="adjust-stock-"]`).first()
+      // Find new product by SKU and get the adjust button
+      const productRow = page.locator('[data-testid^="inventory-row-"]').filter({ hasText: testProduct.sku })
+      const adjustButton = productRow.getByText('Adjust Stock')
       await adjustButton.click()
 
-      // Increase stock by 10
+      // Wait for modal to appear and fill adjustment
+      await page.getByTestId('adjust-stock-modal').waitFor({ state: 'visible' })
       await page.getByTestId('adjustment-input').fill('10')
-      await page.getByTestId('confirm-adjustment-button').click()
+      
+      // Click confirm button
+      await page.getByTestId('confirm-adjust-button').click()
+      
+      // Wait for modal to close
+      await page.getByTestId('adjust-stock-modal').waitFor({ state: 'hidden' })
 
       // Verify stock was updated
-      const newStock = testProduct.stock + 10
-      await expect(page.getByText(newStock.toString())).toBeVisible()
+      const newStock = testProduct.stock + 10;
+      await expect(page.getByText(newStock.toString())).toBeVisible();
     })
 
     // Step 5: Delete the product
     await test.step('Delete product', async () => {
       await page.goto('/products')
 
-      // Search for our product again
+      // Find and delete
       await page.getByTestId('search-input').fill(testProduct.name)
-
-      // Delete it
       const deleteButton = page.locator(`[data-testid^="delete-product-"]`).first()
       await deleteButton.click()
 
       // Confirm deletion in modal
       await page.getByTestId('confirm-delete-button').click()
 
-      // Verify product is gone
+      // Assert that the product was deleted
       await expect(page.getByTestId('no-products-message')).toBeVisible()
     })
   })
@@ -132,8 +136,8 @@ test.describe('Product Lifecycle - Example', () => {
 
       // Check inventory page - low stock alert (in yellow) should exist
       await page.goto('/inventory')
-      const lowStockSectionText = page.getByTestId('low-stock-alert').filter({ hasText: 'running low on stock' })
-      await expect(lowStockSectionText).toContainText('running low on stock') // avoid pluralization (and possible future errors)
+      const lowStockAlert = page.getByTestId('low-stock-alert').filter({ hasText: 'running low on stock' })
+      await expect(lowStockAlert).toContainText('running low on stock') // avoid possible future errors by pluralization
 
       // Check inventory page - low stock item should have 'Low Stock' status with a red background
       const lowStockItem = page.locator('[data-testid^="inventory-row-"]').filter({ hasText: 'Low Stock Product' }).locator('.bg-red-100')
@@ -152,10 +156,10 @@ test.describe('Product Lifecycle - Example', () => {
         await page.getByTestId('description-input').fill(product.description)
         await page.getByTestId('price-input').fill(product.price.toString())
         await page.getByTestId('stock-input').fill(product.stock.toString())
-        await page.getByTestId('category-select').selectOption(product.category)
-        await page.getByTestId('low-stock-threshold-input').fill(product.lowStockThreshold.toString())
+        await page.getByTestId('category-input').selectOption(product.category)
+        await page.getByTestId('threshold-input').fill(product.lowStockThreshold.toString())
 
-        await page.getByTestId('submit-button').click()
+        await page.getByTestId('save-button').click()
         await expect(page).toHaveURL('/products')
 
         // Verify product was created
