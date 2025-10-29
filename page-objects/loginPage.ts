@@ -59,7 +59,6 @@ export class LoginPage extends HelperBase {
   }
 }
 
-
 /**
  * Login helper for quick authentication in tests
  */
