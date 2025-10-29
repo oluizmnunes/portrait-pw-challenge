@@ -27,8 +27,8 @@ export class HelperBase {
   }
 
   /**
-   * Generate unique test data
-   */
+  * Generate unique test data
+  */
   async generateTestProduct() {
     const timestamp = Date.now()
     return {
@@ -41,6 +41,4 @@ export class HelperBase {
       lowStockThreshold: 10
     }
   }
-
-}
 }
