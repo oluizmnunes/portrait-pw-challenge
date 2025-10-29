@@ -17,19 +17,13 @@ export class HelperBase {
   }
 
   async resetApplicationData() {
-    // Navigate to the page first to ensure we're in the correct context
-      await this.page.goto('/')
-
-      // Call the reset API endpoint
-      await this.page.request.post('/api/reset')
-
-      // Clear localStorage to reset client-side data
-      await this.page.evaluate(() => {
+    
+      await this.page.goto('/') // Navigate to the page first to ensure we're in the correct context
+      await this.page.request.post('/api/reset') // Call the reset API endpoint
+      await this.page.evaluate(() => { // Clear localStorage to reset client-side data
         localStorage.clear()
       })
-    
-      // Reload to apply changes
-      await this.page.reload()
+      await this.page.reload() // Reload to apply changes
   }
 
   /**
@@ -47,4 +41,6 @@ export class HelperBase {
       lowStockThreshold: 10
     }
   }
+
+}
 }
