@@ -136,8 +136,8 @@ test.describe('Product Lifecycle - Example', () => {
 
       // Check inventory page - low stock alert (in yellow) should exist
       await page.goto('/inventory')
-      const lowStockSectionText = page.getByTestId('low-stock-alert').filter({ hasText: 'running low on stock' })
-      await expect(lowStockSectionText).toContainText('running low on stock') // avoid pluralization (and possible future errors)
+      const lowStockAlert = page.getByTestId('low-stock-alert').filter({ hasText: 'running low on stock' })
+      await expect(lowStockAlert).toContainText('running low on stock') // avoid possible future errors by pluralization
 
       // Check inventory page - low stock item should have 'Low Stock' status with a red background
       const lowStockItem = page.locator('[data-testid^="inventory-row-"]').filter({ hasText: 'Low Stock Product' }).locator('.bg-red-100')
