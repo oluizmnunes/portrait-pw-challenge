@@ -6,7 +6,6 @@ import { NavigationPage } from '../page-objects/navigationPage'
 test.describe('valid login scenarios', () => {
   test('should login successfully', async ({ page }) => {
       const pm = new PageManager(page);
-      const navigateTo = new NavigationPage(page);
 
       // Act
       await pm.navigateTo().loginPage();
