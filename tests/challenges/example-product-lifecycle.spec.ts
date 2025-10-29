@@ -174,13 +174,14 @@ test.describe('Form Validation - Negative Tests', () => {
 
   test('Should validate required fields', async ({ page }) => {
     // Try to submit empty form
-    await page.getByTestId('submit-button').click()
+    await page.getByTestId('save-button').click()
 
     // Check for validation errors
-    await expect(page.getByTestId('sku-error')).toContainText('SKU is required')
-    await expect(page.getByTestId('name-error')).toContainText('Name is required')
-    await expect(page.getByTestId('price-error')).toContainText('Price is required')
-    await expect(page.getByTestId('stock-error')).toContainText('Stock is required')
+    const productForm = page.getByTestId('product-form');
+    await expect(productForm.filter({ hasText: 'SKU is required' })).toBeVisible();
+    await expect(productForm.filter({ hasText: 'Name is required' })).toBeVisible();
+    await expect(productForm.filter({ hasText: 'Price is required' })).toBeVisible();
+    await expect(productForm.filter({ hasText: 'Stock is required' })).toBeVisible();
   })
 
   test('Should validate negative values', async ({ page }) => {
