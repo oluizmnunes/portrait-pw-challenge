@@ -1,6 +1,5 @@
 import { Page, Locator } from '@playwright/test'
 import { HelperBase } from "../page-objects/helperBase";
-import { Product } from '@/app/lib/products';
 
 export class ProductsPage extends HelperBase {
 

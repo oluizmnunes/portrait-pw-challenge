@@ -12,4 +12,12 @@ export class NavigationPage extends HelperBase {
     async loginPage(){
         await this.page.goto('/login')
     }
+
+    async productsPage(){
+        await this.page.goto('/products')
+    }
+
+    async inventoryPage(){
+        await this.page.goto('/inventory')
+    }
 }

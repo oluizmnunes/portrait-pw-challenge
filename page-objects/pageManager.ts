@@ -4,12 +4,16 @@ import { Page } from '@playwright/test';
 import { NavigationPage } from '../page-objects/navigationPage';
 import { LoginPage } from '../page-objects/loginPage';
 import { DashboardPage } from '../page-objects/dashboardPage';
+import { ProductsPage } from '../page-objects/productsPage';
+import { InventoryPage } from '../page-objects/inventoryPage';
 
 export class PageManager{
     private readonly page: Page;
     private readonly navigationPage: NavigationPage;
     private readonly loginPage: LoginPage;
     private readonly dashboardPage: DashboardPage;
+    private readonly productsPage: ProductsPage;
+    private readonly inventoryPage: InventoryPage;
 
     constructor(page: Page){
         // Initialize all page objects. 
@@ -20,6 +24,8 @@ export class PageManager{
         this.navigationPage = new NavigationPage(this.page); 
         this.loginPage = new LoginPage(this.page);
         this.dashboardPage = new DashboardPage(this.page);
+        this.productsPage = new ProductsPage(this.page);
+        this.inventoryPage = new InventoryPage(this.page);
     }
 
     // Now we need to create methods to return the instances of the page objects
@@ -33,5 +39,13 @@ export class PageManager{
 
     onDashboardPage(): DashboardPage {
         return this.dashboardPage;
+    }
+
+    onProductsPage(): ProductsPage {
+        return this.productsPage;
+    }
+
+    onInventoryPage(): InventoryPage {
+        return this.inventoryPage;
     }
 }
