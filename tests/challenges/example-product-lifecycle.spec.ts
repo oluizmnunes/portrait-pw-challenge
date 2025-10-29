@@ -18,7 +18,7 @@ test.describe('Product Lifecycle - Example', () => {
     await loginAsAdmin(page)
   })
 
-  test.only('Complete product lifecycle: Create → Edit → Adjust Stock → Delete', async ({ page }) => {
+  test('Complete product lifecycle: Create → Edit → Adjust Stock → Delete', async ({ page }) => {
     // Generate unique test data
     const testProduct = generateTestProduct()
 
