@@ -189,10 +189,11 @@ test.describe('Form Validation - Negative Tests', () => {
     await page.getByTestId('price-input').fill('-10')
     await page.getByTestId('stock-input').fill('-5')
 
-    await page.getByTestId('submit-button').click()
+    await page.getByTestId('save-button').click()
 
     // Check for validation errors
-    await expect(page.getByTestId('price-error')).toContainText('Price must be greater than 0')
-    await expect(page.getByTestId('stock-error')).toContainText('Stock cannot be negative')
+    const productForm = page.getByTestId('product-form');
+    await expect(productForm.filter({ hasText: 'Price must be greater than 0' })).toBeVisible();
+    await expect(productForm.filter({ hasText: 'Stock cannot be negative' })).toBeVisible();
   })
 })
