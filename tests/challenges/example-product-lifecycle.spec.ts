@@ -84,8 +84,6 @@ test.describe('Product Lifecycle - Example', () => {
       // Wait for modal to appear and fill adjustment
       await page.getByTestId('adjust-stock-modal').waitFor({ state: 'visible' })
       await page.getByTestId('adjustment-input').fill('10')
-      
-      // Click confirm button
       await page.getByTestId('confirm-adjust-button').click()
       
       // Wait for modal to close
@@ -93,7 +91,7 @@ test.describe('Product Lifecycle - Example', () => {
 
       // Verify stock was updated
       const newStock = testProduct.stock + 10;
-      await expect(page.getByText(newStock.toString())).toBeVisible();
+      await expect(productRow.getByText(newStock.toString())).toBeVisible()
     })
 
     // Step 5: Delete the product
