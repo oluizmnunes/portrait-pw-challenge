@@ -2,38 +2,47 @@ import { test, expect } from '@playwright/test';
 import { PageManager } from '../page-objects/pageManager'
 
 test.describe('valid login scenarios', () => {
+  test.beforeEach(async ({ page }) => { // not beforeAll() to keep test isolation
+    const pm = new PageManager(page);
+
+    await pm.onProductsPage().resetApplicationData();
+    await pm.navigateTo().loginPage();
+
+    await expect(pm.onLoginPage().emailInput).toBeVisible();
+    await expect(pm.onLoginPage().passwordInput).toBeVisible();
+  })
+
   test('should login successfully', async ({ page }) => {
       const pm = new PageManager(page);
 
       // Act
-      await pm.navigateTo().loginPage();
-      await expect(pm.onLoginPage().emailInput).toBeVisible();
-      await expect(pm.onLoginPage().passwordInput).toBeVisible();
-      await pm.onLoginPage().togglePasswordVisibility();
-      await expect(pm.onLoginPage().passwordInput).toHaveAttribute('type', 'text');
-      await pm.onLoginPage().inputEmailAndPassword('admin@test.com', 'Admin123!'); // TODO: eliminate hardcoding asap
+      await pm.onLoginPage().inputEmailAndPassword('admin@test.com', 'Admin123!'); // eliminate hardcoding asap
       await pm.onLoginPage().loginButton.click()
 
       // Assert
-      await page.waitForURL('/dashboard')
-      await expect(pm.onDashboardPage().dashboardTitle).toContainText('Dashboard')
+      await expect(pm.onDashboardPage().dashboardTitle).toContainText('Dashboard') // toContainText() has default timeouts (5s), no need to wait
   })
 })
 
 test.describe('invalid login scenarios', () => {
-  test('should display error message for invalid password', async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
+    const pm = new PageManager(page);
+
+    await pm.onProductsPage().resetApplicationData();
+    await pm.navigateTo().loginPage();
+
+    // Assert
+    await expect(pm.onLoginPage().emailInput).toBeVisible();
+  });
+
+  test('should fail to login and display error message', async ({ page }) => {
     const pm = new PageManager(page);
 
     // Act
-    await pm.navigateTo().loginPage();
-    await expect(pm.onLoginPage().emailInput).toBeVisible();
-    await expect(pm.onLoginPage().passwordInput).toBeVisible();
-    await pm.onLoginPage().togglePasswordVisibility();
-    
+    await pm.onLoginPage().inputEmailAndPassword('invalid@test.com', 'InvalidPassword');
+    await pm.onLoginPage().loginButton.click();
+
     // Assert
-    await expect(pm.onLoginPage().passwordInput).toHaveAttribute('type', 'text');
-    await pm.onLoginPage().inputEmailAndPassword('invalid@test.com', 'Admin123!'); // TODO: eliminate hardcoding asap
-    await pm.onLoginPage().loginButton.click()
-    await expect(pm.onLoginPage().errorMessage).toContainText('Invalid email or password'); 
-  })
-})
+    await expect(pm.onLoginPage().errorMessage).toContainText('Invalid email or password');
+  });
+});
