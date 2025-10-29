@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { LoginPage } from '../pages/login.page'
+import { LoginPage } from '../page-objects/loginPage'
 
 test.describe('Login Functionality - Example Test', () => {
   test('should successfully login with valid credentials', async ({ page }) => {

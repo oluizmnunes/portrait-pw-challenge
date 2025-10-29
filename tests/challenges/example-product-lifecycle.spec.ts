@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
-import { LoginPage } from '../../pages/login.page'
-import { resetApplicationData, loginAsAdmin, generateTestProduct } from '../helpers/test-helpers'
+import { LoginPage } from '../../page-objects/loginPage'
+import { resetApplicationData, loginAsAdmin, generateTestProduct } from '../../page-objects/helperBase'
 import testData from '../../data/test-products.json'
 
 /**

@@ -1,4 +1,5 @@
 import { Page, Locator } from '@playwright/test'
+import { HelperBase } from "../page-objects/helperBase";
 
 export class LoginPage {
   readonly page: Page
@@ -61,3 +62,17 @@ export class LoginPage {
     return errorMessage.trim()
   }
 }
+
+
+
+
+export class FormLayoutsPage extends HelperBase {
+    //private readonly page: Page;
+
+    /*constructor(page: Page){
+        this.page = page;
+    }*/
+
+    constructor (page: Page) {
+        super(page);
+    }
