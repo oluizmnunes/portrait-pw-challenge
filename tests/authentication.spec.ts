@@ -85,7 +85,7 @@ test.describe('invalid login scenarios', () => {
     await pm.onLoginPage().loginButton.click();
 
     const errorMessage = await pm.onLoginPage().getErrorMessage();
-    expect(errorMessage).toBe('Invalid email or password');
+    expect(errorMessage, 'Expected generic invalid credentials message').toBe('Invalid email or password');
   });
 
   test('should display error for wrong email and correct password', async ({ page }) => {
@@ -94,7 +94,7 @@ test.describe('invalid login scenarios', () => {
     await pm.onLoginPage().inputEmailAndPassword(INVALID_EMAIL, ADMIN_PASSWORD);
     await pm.onLoginPage().loginButton.click();
 
-    await expect(pm.onLoginPage().errorMessage).toContainText('Invalid email or password');
+    await expect(pm.onLoginPage().errorMessage, { message: 'Missing error for invalid email with correct password' }).toContainText('Invalid email or password');
   });
 
   test('should display error for correct email and wrong password', async ({ page }) => {
@@ -103,7 +103,7 @@ test.describe('invalid login scenarios', () => {
     await pm.onLoginPage().inputEmailAndPassword(ADMIN_EMAIL, INVALID_PASSWORD);
     await pm.onLoginPage().loginButton.click();
 
-    await expect(pm.onLoginPage().errorMessage).toContainText('Invalid email or password');
+    await expect(pm.onLoginPage().errorMessage, { message: 'Missing error for wrong password with valid email' }).toContainText('Invalid email or password');
   });
 
   test('should display native HTML5 form validation for empty Email', async ({ page }) => {
@@ -112,11 +112,11 @@ test.describe('invalid login scenarios', () => {
     await pm.onLoginPage().inputEmailAndPassword('', ADMIN_PASSWORD);
     await pm.onLoginPage().loginButton.click();
 
-    await expect(pm.onLoginPage().errorMessage).toBeHidden();
+    await expect(pm.onLoginPage().errorMessage, { message: 'App-level error should not appear for empty email' }).toBeHidden();
 
     // validate native HTML5 form validation
     const emailValidation = await pm.onLoginPage().emailInput.evaluate((el: any) => (el as HTMLInputElement).validationMessage);
-    expect(emailValidation).toContain('Please fill out this field');
+    expect(emailValidation, 'Missing native HTML5 validation message on Email').toContain('Please fill out this field');
   });
 
   test('should display native HTML5 form validation for empty Password', async ({ page }) => {
@@ -125,9 +125,9 @@ test.describe('invalid login scenarios', () => {
     await pm.onLoginPage().inputEmailAndPassword(ADMIN_EMAIL, '');
     await pm.onLoginPage().loginButton.click();
 
-    await expect(pm.onLoginPage().errorMessage).toBeHidden();
+    await expect(pm.onLoginPage().errorMessage, { message: 'App-level error should not appear for empty password' }).toBeHidden();
 
     const passwordValidation = await pm.onLoginPage().passwordInput.evaluate((el: any) => (el as HTMLInputElement).validationMessage);
-    expect(passwordValidation).toContain('Please fill out this field');
+    expect(passwordValidation, 'Missing native HTML5 validation message on Password').toContain('Please fill out this field');
   });
 });
