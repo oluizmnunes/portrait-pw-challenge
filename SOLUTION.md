@@ -4,30 +4,30 @@
 
 ```text
 portrait-qa-automation-test/
-├── fixtures/
-│   ├── auth.ts
-│   └── products.ts
-├── page-objects/
-│   ├── dashboardPage.ts
-│   ├── helperBase.ts
-│   ├── inventoryPage.ts
-│   ├── loginPage.ts
-│   ├── navigationBar.ts
-│   ├── navigationPage.ts
-│   ├── pageManager.ts
-│   └── productsPage.ts
-├── tests/
-│   ├── authentication.spec.ts
-│   ├── inventory.spec.ts
-│   └── product.spec.ts
-├── data/
-│   └── test-products.json
-├── playwright.config.ts
+├── fixtures/                           # Reusable setup helpers (auth, product seeding/teardown)
+│   ├── auth.ts                         # Logs in before each test needing authentication
+│   └── products.ts                     # Creates products per test and auto-deletes after
+├── page-objects/                       # Encapsulated UI interactions/selectors (POM)
+│   ├── dashboardPage.ts                # Dashboard page object
+│   ├── helperBase.ts                   # Base utilities shared by page objects
+│   ├── inventoryPage.ts                # Inventory page object
+│   ├── loginPage.ts                    # Login page object
+│   ├── navigationBar.ts                # Top navigation bar component object
+│   ├── navigationPage.ts               # Simple navigation helpers (routes)
+│   ├── pageManager.ts                  # Page Manager (returns POMs bound to the same page)
+│   └── productsPage.ts                 # Products page object
+├── tests/                              # Spec files organized by feature
+│   ├── authentication.spec.ts          # Authentication scenarios
+│   ├── inventory.spec.ts               # Inventory scenarios
+│   └── product.spec.ts                 # Product scenarios
+├── data/                               # Static test data inputs
+│   └── test-products.json              # Sample product dataset
+├── playwright.config.ts                # Playwright settings (projects, server, retries, traces)
 ├── .github/
 │   └── workflows/
-│       └── ci.yml
-├── README.md
-└── SOLUTION.md
+│       └── ci.yml                      # GitHub Actions pipeline to run tests and upload artifacts
+├── README.md                           # Challenge brief and instructions
+└── SOLUTION.md                         # This document: approach and how-to
 ```
 
 ## Testing approach and framework decisions
