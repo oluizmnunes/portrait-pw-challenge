@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { test as authTest } from '../fixtures/auth'
 import { PageManager } from '../page-objects/pageManager'
 
 const INVALID_EMAIL = process.env.PW_INVALID_EMAIL || 'invalid@test.com'
@@ -6,13 +7,13 @@ const INVALID_PASSWORD = process.env.PW_INVALID_PASSWORD || 'InvalidPassword'
 const ADMIN_EMAIL = process.env.PW_ADMIN_EMAIL || 'admin@test.com'
 const ADMIN_PASSWORD = process.env.PW_ADMIN_PASSWORD || 'Admin123!'
 
-test.describe('valid login scenarios', () => {
-  test.beforeEach(async ({ page }) => {
+authTest.describe('valid login scenarios', () => {
+  authTest.beforeEach(async ({ page }) => {
     const pm = new PageManager(page);
     await pm.navigateTo().dashboardPage()
   })
 
-  test('should keep login time to authenticated state under 3 seconds', async ({ page }) => {
+  authTest('should keep login time to authenticated state under 3 seconds', async ({ page }) => {
     const pm = new PageManager(page);
 
     await test.step('Prepare logged-out state without failing if already logged out', async () => {
@@ -29,12 +30,12 @@ test.describe('valid login scenarios', () => {
     })
   })
 
-  test('should login successfully', async ({ page }) => {
+  authTest('should login successfully', async ({ page }) => {
     const pm = new PageManager(page);
     await expect(pm.onNavbar().logoutButton, { message: 'Failed to login, no Logout button found' }).toBeVisible();
   })
 
-  test('should show navbar items and username', async ({ page }) => {
+  authTest('should show navbar items and username', async ({ page }) => {
     const pm = new PageManager(page);
     await expect(pm.onNavbar().dashboardLink, { message: 'Dashboard link not visible after login' }).toBeVisible()
     await expect(pm.onNavbar().productsLink, { message: 'Products link not visible after login' }).toBeVisible()
@@ -42,13 +43,13 @@ test.describe('valid login scenarios', () => {
     await expect(pm.onNavbar().userName, { message: 'Logged-in username is not visible' }).toBeVisible()
   })
 
-  test('should persist session after reload', async ({ page }) => {
+  authTest('should persist session after reload', async ({ page }) => {
     const pm = new PageManager(page);
     await page.reload()
     await expect(pm.onNavbar().logoutButton, { message: 'Session did not persist; Logout button not visible after reload' }).toBeVisible()
   })
 
-  test('should logout and prevent access to dashboard', async ({ page }) => {
+  authTest('should logout and prevent access to dashboard', async ({ page }) => {
     const pm = new PageManager(page);
     await test.step('Logout', async () => {
       await pm.logout()
@@ -60,7 +61,7 @@ test.describe('valid login scenarios', () => {
     })
   })
 
-  test('should logout and prevent access to Products page', async ({ page }) => {
+  authTest('should logout and prevent access to Products page', async ({ page }) => {
     const pm = new PageManager(page);
     await test.step('Logout', async () => {
       await pm.logout()
@@ -72,7 +73,7 @@ test.describe('valid login scenarios', () => {
     })
   })
 
-  test('should logout and prevent access to Inventory page', async ({ page }) => {
+  authTest('should logout and prevent access to Inventory page', async ({ page }) => {
     const pm = new PageManager(page);
     await test.step('Logout', async () => {
       await pm.logout()

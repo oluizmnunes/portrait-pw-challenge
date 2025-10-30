@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../fixtures/auth'
 import { PageManager } from '../page-objects/pageManager'
 
 test.describe('Inventory - Stock Adjustment', () => {
