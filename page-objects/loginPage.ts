@@ -19,9 +19,14 @@ export class LoginPage extends HelperBase {
     this.passwordToggle = page.getByTestId('password-toggle')
   }
 
-  async inputEmailAndPassword(email: string, password: string) {
+  async login(email: string, password: string): Promise<void> {
     await this.emailInput.fill(email)
     await this.passwordInput.fill(password)
+    await Promise.all([
+      this.page.waitForURL('/dashboard'),
+      this.loginButton.click()
+    ])
+    await this.page.getByTestId('logout-button').waitFor({ state: 'visible' })
   }
 
   // TODO: Candidates should implement these methods
@@ -57,26 +62,9 @@ export class LoginPage extends HelperBase {
 
     return errorMessage.trim()
   }
-}
 
-/**
- * Login helper for quick authentication in tests
- */
-export async function loginAsAdmin(page: Page) {
-  await page.goto('/login')
-  await page.getByTestId('email-input').fill('admin@test.com')
-  await page.getByTestId('password-input').fill('Admin123!')
-  await page.getByTestId('login-button').click()
-  await page.waitForURL('/dashboard')
-}
-
-/**
- * Login helper for regular user
- */
-export async function loginAsUser(page: Page) {
-  await page.goto('/login')
-  await page.getByTestId('email-input').fill('user@test.com')
-  await page.getByTestId('password-input').fill('User123!')
-  await page.getByTestId('login-button').click()
-  await page.waitForURL('/dashboard')
+  async inputEmailAndPassword(email: string, password: string) {
+    await this.emailInput.fill(email)
+    await this.passwordInput.fill(password)
+  }
 }
