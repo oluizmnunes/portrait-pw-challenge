@@ -15,59 +15,73 @@ test.describe('valid login scenarios', () => {
   test('should keep login time to authenticated state under 3 seconds', async ({ page }) => {
     const pm = new PageManager(page);
 
-    // Ensure logged-out state without failing if already logged out
-    try { await pm.logout() } catch {}
-    await pm.navigateTo().loginPage()
+    await test.step('Prepare logged-out state without failing if already logged out', async () => {
+      try { await pm.logout() } catch {}
+      await pm.navigateTo().loginPage()
+    })
 
-    const start = Date.now()
-    await pm.onLoginPage().login(ADMIN_EMAIL, ADMIN_PASSWORD)
-    await expect(pm.onNavigationBar().logoutButton, { message: 'Login may not have succeeded once Logout button is not visible' }).toBeVisible()
-    const elapsedMs = Date.now() - start
-
-    expect(elapsedMs, 'Performance regression detected: login time degradation exceeded 3 seconds. Please investigate.').toBeLessThan(3000)
+    await test.step('Perform login and assert budget', async () => {
+      const start = Date.now()
+      await pm.onLoginPage().login(ADMIN_EMAIL, ADMIN_PASSWORD)
+      await expect(pm.onNavbar().logoutButton, { message: 'Login may not have succeeded once Logout button is not visible' }).toBeVisible()
+      const elapsedMs = Date.now() - start
+      expect(elapsedMs, 'Performance regression detected: login time degradation exceeded 3 seconds. Please investigate.').toBeLessThan(3000)
+    })
   })
 
   test('should login successfully', async ({ page }) => {
     const pm = new PageManager(page);
-    await expect(pm.onNavigationBar().logoutButton, { message: 'Failed to login, no Logout button found' }).toBeVisible();
+    await expect(pm.onNavbar().logoutButton, { message: 'Failed to login, no Logout button found' }).toBeVisible();
   })
 
   test('should show navbar items and username', async ({ page }) => {
     const pm = new PageManager(page);
-    await expect(pm.onNavigationBar().dashboardLink, { message: 'Dashboard link not visible after login' }).toBeVisible()
-    await expect(pm.onNavigationBar().productsLink, { message: 'Products link not visible after login' }).toBeVisible()
-    await expect(pm.onNavigationBar().inventoryLink, { message: 'Inventory link not visible after login' }).toBeVisible()
-    await expect(pm.onNavigationBar().userName, { message: 'Logged-in username is not visible' }).toBeVisible()
+    await expect(pm.onNavbar().dashboardLink, { message: 'Dashboard link not visible after login' }).toBeVisible()
+    await expect(pm.onNavbar().productsLink, { message: 'Products link not visible after login' }).toBeVisible()
+    await expect(pm.onNavbar().inventoryLink, { message: 'Inventory link not visible after login' }).toBeVisible()
+    await expect(pm.onNavbar().userName, { message: 'Logged-in username is not visible' }).toBeVisible()
   })
 
   test('should persist session after reload', async ({ page }) => {
     const pm = new PageManager(page);
     await page.reload()
-    await expect(pm.onNavigationBar().logoutButton, { message: 'Session did not persist; Logout button not visible after reload' }).toBeVisible()
+    await expect(pm.onNavbar().logoutButton, { message: 'Session did not persist; Logout button not visible after reload' }).toBeVisible()
   })
 
   test('should logout and prevent access to dashboard', async ({ page }) => {
     const pm = new PageManager(page);
-    await pm.logout()
-    await expect(page, { message: 'After logout, URL did not change to /login' }).toHaveURL('/login')
-    await pm.navigateTo().dashboardPage()
-    await expect(page, { message: 'Unauthenticated user could access /dashboard' }).toHaveURL('/login')
+    await test.step('Logout', async () => {
+      await pm.logout()
+      await expect(page, { message: 'After logout, URL did not change to /login' }).toHaveURL('/login')
+    })
+    await test.step('Attempt access to dashboard and verify blocked', async () => {
+      await pm.navigateTo().dashboardPage()
+      await expect(page, { message: 'Unauthenticated user could access /dashboard' }).toHaveURL('/login')
+    })
   })
 
   test('should logout and prevent access to Products page', async ({ page }) => {
     const pm = new PageManager(page);
-    await pm.logout()
-    await expect(page, { message: 'After logout, URL did not change to /login' }).toHaveURL('/login')
-    await pm.navigateTo().productsPage()
-    await expect(page, { message: 'Unauthenticated user could access /products' }).toHaveURL('/login')
+    await test.step('Logout', async () => {
+      await pm.logout()
+      await expect(page, { message: 'After logout, URL did not change to /login' }).toHaveURL('/login')
+    })
+    await test.step('Attempt access to products and verify blocked', async () => {
+      await pm.navigateTo().productsPage()
+      await expect(page, { message: 'Unauthenticated user could access /products' }).toHaveURL('/login')
+    })
   })
 
   test('should logout and prevent access to Inventory page', async ({ page }) => {
     const pm = new PageManager(page);
-    await pm.logout()
-    await expect(page, { message: 'After logout, URL did not change to /login' }).toHaveURL('/login')
-    await pm.navigateTo().inventoryPage()
-    await expect(page, { message: 'Unauthenticated user could access /inventory' }).toHaveURL('/login')
+    await test.step('Logout', async () => {
+      await pm.logout()
+      await expect(page, { message: 'After logout, URL did not change to /login' }).toHaveURL('/login')
+    })
+    await test.step('Attempt access to inventory and verify blocked', async () => {
+      await pm.navigateTo().inventoryPage()
+      await expect(page, { message: 'Unauthenticated user could access /inventory' }).toHaveURL('/login')
+    })
   })
 })
 
@@ -80,61 +94,63 @@ test.describe('invalid login scenarios', () => {
 
   test('should display error message when login fails due to invalid credentials', async ({ page }) => {
     const pm = new PageManager(page);
-
-    await pm.onLoginPage().inputEmailAndPassword(INVALID_EMAIL, INVALID_PASSWORD);
-    await pm.onLoginPage().loginButton.click();
-
-    const errorMessage = await pm.onLoginPage().getErrorMessage();
-    expect(errorMessage, 'Expected generic invalid credentials message').toBe('Invalid email or password');
+    await test.step('Submit invalid credentials', async () => {
+      await pm.onLoginPage().inputEmailAndPassword(INVALID_EMAIL, INVALID_PASSWORD);
+      await pm.onLoginPage().loginButton.click();
+    })
+    await test.step('Assert generic error', async () => {
+      const errorMessage = await pm.onLoginPage().getErrorMessage();
+      expect(errorMessage, 'Expected generic invalid credentials message').toBe('Invalid email or password');
+    })
   });
-
-
 
   test('should display error for correct email and wrong password', async ({ page }) => {
     const pm = new PageManager(page);
-
-    await pm.onLoginPage().inputEmailAndPassword(ADMIN_EMAIL, INVALID_PASSWORD);
-    await pm.onLoginPage().loginButton.click();
-    const errorMessage = await pm.onLoginPage().getErrorMessage();
-
-    expect(errorMessage, 'Missing error for wrong password with valid email').toBe('Invalid email or password');
+    await test.step('Submit wrong password', async () => {
+      await pm.onLoginPage().inputEmailAndPassword(ADMIN_EMAIL, INVALID_PASSWORD);
+      await pm.onLoginPage().loginButton.click();
+    })
+    await test.step('Assert generic error', async () => {
+      const errorMessage = await pm.onLoginPage().getErrorMessage();
+      expect(errorMessage, 'Missing error for wrong password with valid email').toBe('Invalid email or password');
+    })
   });
 
   // include browserName in the test name to help with cross-browser testing
   test('should display native HTML5 form validation for empty Email', async ({ page }) => {
     const pm = new PageManager(page);
-
-    await pm.onLoginPage().inputEmailAndPassword('', ADMIN_PASSWORD);
-    await pm.onLoginPage().loginButton.click();
-
-    await expect(pm.onLoginPage().errorMessage, { message: 'App-level error should not appear for empty email' }).toBeHidden();
-
-    // Cross-browser: trigger validity UI (Safari may not populate message until reportValidity())
-    const validity = await pm.onLoginPage().emailInput.evaluate((el: any) => {
-      const input = el as HTMLInputElement;
-      input.reportValidity();
-      return { valid: input.checkValidity(), message: input.validationMessage };
-    });
-    expect(validity.valid, 'Email input should be invalid when empty').toBe(false);
-    expect((validity.message || '').trim().length, 'Expected a non-empty native validation message').toBeGreaterThan(0);
+    await test.step('Submit with empty email', async () => {
+      await pm.onLoginPage().inputEmailAndPassword('', ADMIN_PASSWORD);
+      await pm.onLoginPage().loginButton.click();
+      await expect(pm.onLoginPage().errorMessage, { message: 'App-level error should not appear for empty email' }).toBeHidden();
+    })
+    await test.step('Assert native validity', async () => {
+      const validity = await pm.onLoginPage().emailInput.evaluate((el: any) => {
+        const input = el as HTMLInputElement;
+        input.reportValidity();
+        return { valid: input.checkValidity(), message: input.validationMessage };
+      });
+      expect(validity.valid, 'Email input should be invalid when empty').toBe(false);
+      expect((validity.message || '').trim().length, 'Expected a non-empty native validation message').toBeGreaterThan(0);
+    })
   });
-
 
   test('should display native HTML5 form validation for empty Password', async ({ page }) => {
     const pm = new PageManager(page);
-
-    await pm.onLoginPage().inputEmailAndPassword(ADMIN_EMAIL, '');
-    await pm.onLoginPage().loginButton.click();
-
-    await expect(pm.onLoginPage().errorMessage, { message: 'App-level error should not appear for empty password' }).toBeHidden();
-
-    const validity = await pm.onLoginPage().passwordInput.evaluate((el: any) => {
-      const input = el as HTMLInputElement;
-      input.reportValidity();
-      return { valid: input.checkValidity(), message: input.validationMessage };
-    });
-    expect(validity.valid, 'Password input should be invalid when empty').toBe(false);
-    expect((validity.message || '').trim().length, 'Expected a non-empty native validation message').toBeGreaterThan(0);
+    await test.step('Submit with empty password', async () => {
+      await pm.onLoginPage().inputEmailAndPassword(ADMIN_EMAIL, '');
+      await pm.onLoginPage().loginButton.click();
+      await expect(pm.onLoginPage().errorMessage, { message: 'App-level error should not appear for empty password' }).toBeHidden();
+    })
+    await test.step('Assert native validity', async () => {
+      const validity = await pm.onLoginPage().passwordInput.evaluate((el: any) => {
+        const input = el as HTMLInputElement;
+        input.reportValidity();
+        return { valid: input.checkValidity(), message: input.validationMessage };
+      });
+      expect(validity.valid, 'Password input should be invalid when empty').toBe(false);
+      expect((validity.message || '').trim().length, 'Expected a non-empty native validation message').toBeGreaterThan(0);
+    })
   });
 });
 
