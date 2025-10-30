@@ -9,19 +9,31 @@ export class NavigationPage extends HelperBase {
         super(page);
     }
 
+    private async gotoPath(path: string) {
+        const current = new URL(this.page.url(), 'http://localhost').pathname;
+        if (current === path) return;
+        try {
+            await this.page.goto(path, { waitUntil: 'load' });
+        } catch (e) {
+            await this.page.waitForLoadState('load').catch(() => {});
+            await this.page.goto(path, { waitUntil: 'load' });
+        }
+        await this.page.waitForURL(path);
+    }
+
     async loginPage(){
-        await this.page.goto('/login')
+        await this.gotoPath('/login')
     }
 
     async dashboardPage(){
-        await this.page.goto('/dashboard')
+        await this.gotoPath('/dashboard')
     }
 
     async productsPage(){
-        await this.page.goto('/products')
+        await this.gotoPath('/products')
     }
 
     async inventoryPage(){
-        await this.page.goto('/inventory')
+        await this.gotoPath('/inventory')
     }
 }

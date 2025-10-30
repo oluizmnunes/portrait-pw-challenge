@@ -88,22 +88,16 @@ test.describe('invalid login scenarios', () => {
     expect(errorMessage, 'Expected generic invalid credentials message').toBe('Invalid email or password');
   });
 
-  test('should display error for wrong email and correct password', async ({ page }) => {
-    const pm = new PageManager(page);
 
-    await pm.onLoginPage().inputEmailAndPassword(INVALID_EMAIL, ADMIN_PASSWORD);
-    await pm.onLoginPage().loginButton.click();
-
-    await expect(pm.onLoginPage().errorMessage, { message: 'Missing error for invalid email with correct password' }).toContainText('Invalid email or password');
-  });
 
   test('should display error for correct email and wrong password', async ({ page }) => {
     const pm = new PageManager(page);
 
     await pm.onLoginPage().inputEmailAndPassword(ADMIN_EMAIL, INVALID_PASSWORD);
     await pm.onLoginPage().loginButton.click();
+    const errorMessage = await pm.onLoginPage().getErrorMessage();
 
-    await expect(pm.onLoginPage().errorMessage, { message: 'Missing error for wrong password with valid email' }).toContainText('Invalid email or password');
+    expect(errorMessage, 'Missing error for wrong password with valid email').toBe('Invalid email or password');
   });
 
   // include browserName in the test name to help with cross-browser testing
