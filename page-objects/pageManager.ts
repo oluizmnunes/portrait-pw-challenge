@@ -55,4 +55,13 @@ export class PageManager{
     onNavigationBar(): NavigationBar {
         return this.navBar;
     }
+
+    async logout(): Promise<void> {
+        await this.navBar.logout();
+        await Promise.all([
+            this.loginPage.emailInput.waitFor({ state: 'visible' }),
+            this.loginPage.passwordInput.waitFor({ state: 'visible' }),
+            this.loginPage.loginButton.waitFor({ state: 'visible' })
+        ]);
+    }
 }

@@ -16,7 +16,7 @@ test.describe('valid login scenarios', () => {
     const pm = new PageManager(page);
 
     // Ensure logged-out state without failing if already logged out
-    try { await pm.onNavigationBar().logout() } catch {}
+    try { await pm.logout() } catch {}
     await pm.navigateTo().loginPage()
 
     const start = Date.now()
@@ -48,7 +48,7 @@ test.describe('valid login scenarios', () => {
 
   test('should logout and prevent access to dashboard', async ({ page }) => {
     const pm = new PageManager(page);
-    await pm.onNavigationBar().logout()
+    await pm.logout()
     await expect(page, { message: 'After logout, URL did not change to /login' }).toHaveURL('/login')
     await pm.navigateTo().dashboardPage()
     await expect(page, { message: 'Unauthenticated user could access /dashboard' }).toHaveURL('/login')
@@ -56,7 +56,7 @@ test.describe('valid login scenarios', () => {
 
   test('should logout and prevent access to Products page', async ({ page }) => {
     const pm = new PageManager(page);
-    await pm.onNavigationBar().logout()
+    await pm.logout()
     await expect(page, { message: 'After logout, URL did not change to /login' }).toHaveURL('/login')
     await pm.navigateTo().productsPage()
     await expect(page, { message: 'Unauthenticated user could access /products' }).toHaveURL('/login')
@@ -64,7 +64,7 @@ test.describe('valid login scenarios', () => {
 
   test('should logout and prevent access to Inventory page', async ({ page }) => {
     const pm = new PageManager(page);
-    await pm.onNavigationBar().logout()
+    await pm.logout()
     await expect(page, { message: 'After logout, URL did not change to /login' }).toHaveURL('/login')
     await pm.navigateTo().inventoryPage()
     await expect(page, { message: 'Unauthenticated user could access /inventory' }).toHaveURL('/login')
