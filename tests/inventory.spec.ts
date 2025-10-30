@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures/auth'
+import { test, expect } from '../fixtures/products'
 import { PageManager } from '../page-objects/pageManager'
 
 test.describe('Inventory - Stock Adjustment', () => {
@@ -7,14 +7,10 @@ test.describe('Inventory - Stock Adjustment', () => {
     await pm.onProductsPage().resetApplicationData()
   })
 
-  test('should adjust stock for an existing product', async ({ page }) => {
+  test('should adjust stock for an existing product', async ({ page, createProduct }) => {
     const pm = new PageManager(page)
-    const product = pm.onProductsPage().generateTestProduct()
+    const product = await createProduct()
     const adjustment = Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000
-
-    await test.step('Seed product', async () => {
-      await pm.onProductsPage().createProduct(product)
-    })
 
     await test.step('Open inventory and adjust stock', async () => {
       await pm.navigateTo().inventoryPage()

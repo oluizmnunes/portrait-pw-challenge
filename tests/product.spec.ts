@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures/auth';
+import { test, expect } from '../fixtures/products';
 import { PageManager } from '../page-objects/pageManager';
 
 test.describe('Products - Add and Delete', () => {
@@ -9,26 +9,21 @@ test.describe('Products - Add and Delete', () => {
     await expect(pm.onProductsPage().productsTable, { message: 'Products table not ready after navigation' }).toBeVisible();
   });
 
-  test('should add a new product with valid data', async ({ page }) => {
+  test('should add a new product with valid data', async ({ page, createProduct }) => {
     const pm = new PageManager(page);
-    const product = pm.onProductsPage().generateTestProduct();
-    await test.step('Open form and submit valid product', async () => {
-      await pm.onProductsPage().createProduct(product);
-    })
+    const product = await createProduct();
     await test.step('Verify product appears in list', async () => {
       await expect(pm.onProductsPage().productsTable.filter({ hasText: product.sku }), { message: 'Created product row not visible in table' }).toBeVisible();
     })
   });
 
-  test('should delete a product with confirmation', async ({ page }) => {
+  test('should delete a product with confirmation', async ({ page, createProduct, untrackProduct }) => {
     const pm = new PageManager(page);
-    const product = pm.onProductsPage().generateTestProduct();
-    await test.step('Create product to be deleted', async () => {
-      await pm.onProductsPage().createProduct(product);
-    })
+    const product = await createProduct();
     await test.step('Delete from list', async () => {
       await pm.onProductsPage().searchProduct(product.name);
       await pm.onProductsPage().deleteFirstProduct();
+      untrackProduct(product.sku)
     })
     await test.step('Verify deletion feedback', async () => {
       await expect(pm.onProductsPage().noProductsMessage, { message: 'No products message not visible after deletion' }).toBeVisible();
@@ -45,12 +40,9 @@ test.describe('Products - Business Rules', () => {
     await expect(pm.onProductsPage().productsTable, { message: 'Products table not ready after navigation' }).toBeVisible();
   });
 
-  test('should not create a second product with duplicate SKU', async ({ page }) => {
+  test('should not create a second product with duplicate SKU', async ({ page, createProduct }) => {
     const pm = new PageManager(page);
-    const product = pm.onProductsPage().generateTestProduct();
-    await test.step('Create baseline product', async () => {
-      await pm.onProductsPage().createProduct(product);
-    })
+    const product = await createProduct();
     await test.step('Attempt to create duplicate SKU', async () => {
       await pm.navigateTo().productsPage();
       await Promise.all([
@@ -131,12 +123,10 @@ test.describe('Products - Sorting and Filtering', () => {
     await pm.navigateTo().productsPage();
   });
 
-  test('should sort by name', async ({ page }) => {
+  test('should sort by name', async ({ page, createProduct }) => {
     const pm = new PageManager(page);
-
-    const startedWithZ = pm.onProductsPage().generateTestProduct(); startedWithZ.name = 'ZZZ Product';
+    const startedWithZ = await createProduct({ name: 'ZZZ Product' });
     await test.step('Seed data', async () => {
-      await pm.onProductsPage().createProduct(startedWithZ);
       await expect(page).toHaveURL('/products')
       await expect(pm.onProductsPage().productsTable, { message: 'Products table not ready' }).toBeVisible()
       await expect(pm.onProductsPage().productsTable.filter({ hasText: startedWithZ.sku }), { message: 'Row for last product not rendered yet' }).toBeVisible();
@@ -148,12 +138,9 @@ test.describe('Products - Sorting and Filtering', () => {
     })
   });
 
-  test('should return only the product that matches the search', async ({ page }) => {
+  test('should return only the product that matches the search', async ({ page, createProduct }) => {
     const pm = new PageManager(page);
-    const product = pm.onProductsPage().generateTestProduct();
-    await test.step('Seed product', async () => {
-      await pm.onProductsPage().createProduct(product);
-    })
+    const product = await createProduct();
     await test.step('Search and verify single result', async () => {
       await pm.onProductsPage().searchProduct(product.name);
       const productRows = pm.onProductsPage().productsTable.locator('[data-testid^="product-row-"]');
