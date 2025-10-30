@@ -108,16 +108,13 @@ npx playwright test (or npm test)
 
 ## Suggestions for future test improvements
 
+- Refine GitHub Actions flow.
 - Make all tests shard-safe, check for remaining implicit dependencies.
-
 - Implement product setup/teardown.
-
 - API integration for test data setup.
-
 - Performance and reliability
   - Implement performance checks within our CI pipeline. This involves setting budgets (maximum allowed limits) for key metrics.
   - Introduce visual regression or component-level checks where helpful.
-
 - Scalability
   - Review current POM model. Eager initialization (create page objects when the manager is created) is usually better than lazy (current).
 - Reporting
