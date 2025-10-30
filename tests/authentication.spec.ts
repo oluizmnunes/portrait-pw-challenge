@@ -145,11 +145,11 @@ test.describe('password visibility toggle', () => {
     await pm.onLoginPage().inputEmailAndPassword('user@example.com', 'Secret123!')
 
     const initiallyVisible = await pm.onLoginPage().isPasswordVisible()
-    expect(initiallyVisible, 'Password should be hidden by default').toBe(false)
+    expect(initiallyVisible, 'Password should be hidden by default (type="password")').toBe(false)
 
     await pm.onLoginPage().togglePasswordVisibility()
     const afterToggleVisible = await pm.onLoginPage().isPasswordVisible()
-    expect(afterToggleVisible, 'Password should become visible after toggling').toBe(true)
+    expect(afterToggleVisible, 'Password should become visible after toggling (type="text")').toBe(true)
   })
 
   test('should toggle password visibility back to hidden when clicked again', async ({ page }) => {
@@ -157,9 +157,9 @@ test.describe('password visibility toggle', () => {
 
     await pm.onLoginPage().inputEmailAndPassword('user@example.com', 'Secret123!')
     await pm.onLoginPage().togglePasswordVisibility()
-    expect(await pm.onLoginPage().isPasswordVisible(), 'Password should be visible after first toggle').toBe(true)
+    expect(await pm.onLoginPage().isPasswordVisible(), 'Password should be visible after first toggle (type="text")').toBe(true)
 
     await pm.onLoginPage().togglePasswordVisibility()
-    expect(await pm.onLoginPage().isPasswordVisible(), 'Password should be hidden after second toggle').toBe(false)
+    expect(await pm.onLoginPage().isPasswordVisible(), 'Password should be hidden after second toggle (type="password")').toBe(false)
   })
 })
