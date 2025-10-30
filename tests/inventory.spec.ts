@@ -10,6 +10,7 @@ test.describe('Inventory - Stock Adjustment', () => {
   test('should adjust stock for an existing product', async ({ page }) => {
     const pm = new PageManager(page)
     const product = pm.onProductsPage().generateTestProduct()
+    const adjustment = Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000
 
     await pm.onProductsPage().createProduct(product)
     await pm.navigateTo().inventoryPage()
@@ -19,12 +20,12 @@ test.describe('Inventory - Stock Adjustment', () => {
     await expect(row, { message: 'Inventory row for created product not visible' }).toBeVisible()
     await row.getByText('Adjust Stock').click()
     await expect(pm.onInventoryPage().adjustStockModal, { message: 'Adjust stock modal did not appear' }).toBeVisible()
-    await pm.onInventoryPage().adjustmentInput.fill('10')
+    await pm.onInventoryPage().adjustmentInput.fill(String(adjustment))
     await pm.onInventoryPage().confirmAdjustButton.click()
     await pm.onInventoryPage().adjustStockModal.waitFor({ state: 'hidden' })
 
-    const newStock = product.stock + 10
-    await expect(row.getByText(newStock.toString()), { message: 'Adjusted stock not reflected in row' }).toBeVisible()
+    const newStock = (product.stock + adjustment).toString()
+    await expect.soft(row.getByText(newStock), { message: 'Adjusted stock not reflected in row' }).toBeVisible()
   })
 })
 
