@@ -1,7 +1,7 @@
 import { Page, Locator } from '@playwright/test'
 import { HelperBase } from './helperBase'
 
-export class NavigationBar extends HelperBase {
+export class Navbar extends HelperBase {
 
   readonly dashboardLink: Locator
   readonly productsLink: Locator
@@ -39,4 +39,3 @@ export class NavigationBar extends HelperBase {
     await this.page.waitForURL('/login')
   }
 }
-
