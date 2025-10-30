@@ -4,43 +4,49 @@
 
 ```text
 portrait-qa-automation-test/
-├── fixtures/                           # Reusable setup helpers (auth, product seeding/teardown)
-│   ├── auth.ts                         # Logs in before each test needing authentication
-│   └── products.ts                     # Creates products per test and auto-deletes after
+├── fixtures/                           
+│   ├── auth.ts                         # Authentication fixture for logged-in state
+│   └── products.ts                     # Creates products per test and auto-deletes
 ├── page-objects/                       # Encapsulated UI interactions/selectors (POM)
-│   ├── dashboardPage.ts                # Dashboard page object
-│   ├── helperBase.ts                   # Base utilities shared by page objects
-│   ├── inventoryPage.ts                # Inventory page object
-│   ├── loginPage.ts                    # Login page object
+│   ├── dashboardPage.ts                # Dashboard
+│   ├── helperBase.ts                   # Base utilities
+│   ├── inventoryPage.ts                # Inventory
+│   ├── loginPage.ts                    # Login
 │   ├── navigationBar.ts                # Top navigation bar component object
 │   ├── navigationPage.ts               # Simple navigation helpers (routes)
-│   ├── pageManager.ts                  # Page Manager (returns POMs bound to the same page)
-│   └── productsPage.ts                 # Products page object
-├── tests/                              # Spec files organized by feature
+│   ├── pageManager.ts                  # Page Manager - instantiate all pages at once
+│   └── productsPage.ts                 # Products 
+├── tests/                              
 │   ├── authentication.spec.ts          # Authentication scenarios
 │   ├── inventory.spec.ts               # Inventory scenarios
 │   └── product.spec.ts                 # Product scenarios
-├── data/                               # Static test data inputs
+├── data/                               
 │   └── test-products.json              # Sample product dataset
-├── playwright.config.ts                # Playwright settings (projects, server, retries, traces)
+├── playwright.config.ts                # Playwright settings
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                      # GitHub Actions pipeline to run tests and upload artifacts
+│       └── ci.yml                      # Pipeline to run tests
 ├── README.md                           # Challenge brief and instructions
 └── SOLUTION.md                         # This document: approach and how-to
 ```
 
 ## Testing approach and framework decisions
 
-- Playwright + TypeScript
-  - Page Object Model to encapsulate UI interactions and selectors, improving reusability and maintainability.
-  - Custom fixtures to standardize environment setup:
+- PageManager and Navigation pattern (with POM)
+  - **Improved test readability**: Tests read like plain English with `pm.navigateTo().inventoryPage()` instead of raw `page.goto('/inventory')`. It's like code as documentation where test intent immediately clear.
+  - **Centralized navigation logic**: All route management lives in `navigationPage.ts`. If URLs change, update one place instead of hunting through dozens of tests.
+  - **Consistent page object access**: `pageManager.onProductsPage()` returns the same instance bound to the current `page`, preventing selector drift and ensuring tests always interact with the correct page context.
+  - **Simplified Page Access**: No need to `new AnyPage(page)` everywhere.
+  - **Better maintainability**: When page object constructors change (e.g., new dependencies), only the manager needs updates. Tests remain unchanged.
+  - **Test isolation**: Each test gets a fresh manager instance, preventing shared state that could cause flaky tests.
+
+- Custom fixtures to standardize environment setup:
     - fixtures/auth.ts: logs in before each test needing authentication.
     - fixtures/products.ts: creates products and auto-cleans them up after each test.
   - Tests organized by feature (Authentication, Products, Inventory) with clear `test.step` blocks for readability and diagnostics.
   - Assertions include messages to speed up failure triage.
 
-- Deterministic setup/teardown
+- Deterministic setup/teardown (WIP)
   - Every test seeds its own data (product creation via fixture) and does not depend on other tests.
   - The inventory tests reuse the product fixture for setup and avoid cross-file coupling.
 
@@ -49,14 +55,10 @@ portrait-qa-automation-test/
 
 ## Assumptions about application behavior
 
-- Auth
-  - Admin credentials are valid via PW_ADMIN_EMAIL/PW_ADMIN_PASSWORD.
-  - Authenticated state is required to access dashboard, products, and inventory.
-
 - Products
   - SKU must be unique.
   - Required fields and validation messages are rendered in the product form.
-  - Sorting by name moves lexicographically higher values accordingly.
+  - Sorting by name puts A before Z.
 
 - Inventory
   - Adjusting stock updates the stock value in list views.
@@ -64,17 +66,14 @@ portrait-qa-automation-test/
 
 ## How to run the test suite
 
-- Local
-  - npm install
-  - npx playwright install
-  - npm run dev (in a separate terminal)
-  - npx playwright test
-
-- With environment variables
-  - PW_ADMIN_EMAIL=admin@test.com PW_ADMIN_PASSWORD=Admin123! npx playwright test
-
-- HTML report
-  - npx playwright show-report
+```
+git clone https://github.com/oluizmnunes/portrait-pw-challenge.git
+cd portrait-pw-challenge
+npm install
+npx playwright install
+npm run dev (in a separate terminal)
+npx playwright test (or npm test)
+```
 
 ## Coverage strategy and prioritization
 
@@ -109,19 +108,17 @@ portrait-qa-automation-test/
 
 ## Suggestions for future test improvements
 
-- Make all tests shard-safe
-  - Audit remaining implicit dependencies; enforce seed/reset per test.
+- Make all tests shard-safe, check for remaining implicit dependencies.
 
-- Add API-layer data setup
-  - Prefer direct API seeding for speed and reduced UI flakiness when available.
+- Implement product setup/teardown.
+
+- API integration for test data setup.
 
 - Performance and reliability
-  - Add budgets and lightweight perf checks (TTFB, action timings) with alerts in CI.
+  - Implement performance checks within our CI pipeline. This involves setting budgets (maximum allowed limits) for key metrics.
   - Introduce visual regression or component-level checks where helpful.
 
 - Scalability
-  - Re-enable sharding and CI matrix across OSes once independence is guaranteed.
-  - Add parallel project-level runs selectively (e.g., Chromium only for smoke).
-
+  - Review current POM model. Eager initialization (create page objects when the manager is created) is usually better than lazy (current).
 - Reporting
-  - Publish Playwright HTML report via GitHub Pages job for easier sharing.
+  - Create report artifacts.
