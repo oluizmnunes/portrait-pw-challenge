@@ -27,9 +27,9 @@ export class HelperBase {
   }
 
   /**
-  * Generate unique test data
+  * Generate unique test product data
   */
-  async generateTestProduct() {
+  generateTestProduct() {
     const timestamp = Date.now()
     return {
       sku: `TEST-${timestamp}`,

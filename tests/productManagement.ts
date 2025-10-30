@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 import { PageManager } from '../page-objects/pageManager';
-import { HelperBase } from '../page-objects/helperBase';
 import testData from '../data/test-products.json';
 
 /**
@@ -11,15 +10,11 @@ import testData from '../data/test-products.json';
 test.describe('Product Lifecycle - Example', () => {
   test.beforeEach(async ({ page }) => {
     const pm = new PageManager(page);
-    
-    // Reset data before each test for isolation
     await pm.onProductsPage().resetApplicationData();
 
-    // Login as admin for product management
-    await pm.onProductsPage().loginAsAdmin();
-    await pm.navigateTo().loginPage()
-    await pm.onLoginPage().inputEmailAndPassword('admin@test.com', 'Admin123!')
-    // need to create a navbar page object ??
+    await pm.onLoginPage().inputEmailAndPassword('admin@test.com', 'Admin123!'); // eliminate hardcoding asap
+    await pm.onLoginPage().loginButton.click();
+    await pm.onNavigationBar().navigateToProducts();
   });
 
   // this test should be split
@@ -27,7 +22,7 @@ test.describe('Product Lifecycle - Example', () => {
     const pm = new PageManager(page);
     
     // Generate unique test data
-    const testProduct = generateTestProduct();
+    const testProduct = pm.onProductsPage().generateTestProduct();
 
     // Step 1: Create a new product
     await test.step('Create new product', async () => {
@@ -145,7 +140,7 @@ test.describe('Form Validation - Negative Tests', () => {
     const pm = new PageManager(page);
     
     await pm.onProductsPage().resetApplicationData();
-    await pm.onProductsPage().loginAsAdmin();
+
     await pm.navigateTo().productsPage();
     await pm.onProductsPage().addProductButton.click();
     await page.waitForURL('/products/new');
