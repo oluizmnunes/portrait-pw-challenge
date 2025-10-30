@@ -21,10 +21,10 @@ test.describe('valid login scenarios', () => {
 
     const start = Date.now()
     await pm.onLoginPage().login(ADMIN_EMAIL, ADMIN_PASSWORD)
-    await expect(pm.onNavigationBar().logoutButton).toBeVisible()
+    await expect(pm.onNavigationBar().logoutButton, { message: 'Login may not have succeeded once Logout button is not visible' }).toBeVisible()
     const elapsedMs = Date.now() - start
 
-    expect(elapsedMs).toBeLessThan(3000)
+    expect(elapsedMs, 'Performance regression detected: login time degradation exceeded 3 seconds. Please investigate.').toBeLessThan(3000)
   })
 
   test('should login successfully', async ({ page }) => {
@@ -34,40 +34,40 @@ test.describe('valid login scenarios', () => {
 
   test('should show navbar items and username', async ({ page }) => {
     const pm = new PageManager(page);
-    await expect(pm.onNavigationBar().dashboardLink).toBeVisible()
-    await expect(pm.onNavigationBar().productsLink).toBeVisible()
-    await expect(pm.onNavigationBar().inventoryLink).toBeVisible()
-    await expect(pm.onNavigationBar().userName).toBeVisible()
+    await expect(pm.onNavigationBar().dashboardLink, { message: 'Dashboard link not visible after login' }).toBeVisible()
+    await expect(pm.onNavigationBar().productsLink, { message: 'Products link not visible after login' }).toBeVisible()
+    await expect(pm.onNavigationBar().inventoryLink, { message: 'Inventory link not visible after login' }).toBeVisible()
+    await expect(pm.onNavigationBar().userName, { message: 'Logged-in username is not visible' }).toBeVisible()
   })
 
   test('should persist session after reload', async ({ page }) => {
     const pm = new PageManager(page);
     await page.reload()
-    await expect(pm.onNavigationBar().logoutButton).toBeVisible()
+    await expect(pm.onNavigationBar().logoutButton, { message: 'Session did not persist; Logout button not visible after reload' }).toBeVisible()
   })
 
   test('should logout and prevent access to dashboard', async ({ page }) => {
     const pm = new PageManager(page);
     await pm.onNavigationBar().logout()
-    await expect(page).toHaveURL('/login')
+    await expect(page, { message: 'After logout, URL did not change to /login' }).toHaveURL('/login')
     await pm.navigateTo().dashboardPage()
-    await expect(page).toHaveURL('/login')
+    await expect(page, { message: 'Unauthenticated user could access /dashboard' }).toHaveURL('/login')
   })
 
   test('should logout and prevent access to Products page', async ({ page }) => {
     const pm = new PageManager(page);
     await pm.onNavigationBar().logout()
-    await expect(page).toHaveURL('/login')
+    await expect(page, { message: 'After logout, URL did not change to /login' }).toHaveURL('/login')
     await pm.navigateTo().productsPage()
-    await expect(page).toHaveURL('/login')
+    await expect(page, { message: 'Unauthenticated user could access /products' }).toHaveURL('/login')
   })
 
   test('should logout and prevent access to Inventory page', async ({ page }) => {
     const pm = new PageManager(page);
     await pm.onNavigationBar().logout()
-    await expect(page).toHaveURL('/login')
+    await expect(page, { message: 'After logout, URL did not change to /login' }).toHaveURL('/login')
     await pm.navigateTo().inventoryPage()
-    await expect(page).toHaveURL('/login')
+    await expect(page, { message: 'Unauthenticated user could access /inventory' }).toHaveURL('/login')
   })
 })
 
