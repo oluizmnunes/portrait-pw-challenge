@@ -1,10 +1,5 @@
 import { Page } from '@playwright/test'
 
-/**
- * Reset application data to default state
- * Useful for test isolation and cleanup
- */
-
 export class HelperBase {
   // class
   // field
@@ -16,14 +11,19 @@ export class HelperBase {
       this.page = page;
   }
 
+  /**
+  * Reset application data to default state
+  * Useful for test isolation and cleanup
+  */
   async resetApplicationData() {
-    
+    try {
       await this.page.goto('/') // Navigate to the page first to ensure we're in the correct context
       await this.page.request.post('/api/reset') // Call the reset API endpoint
-      await this.page.evaluate(() => { // Clear localStorage to reset client-side data
-        localStorage.clear()
-      })
+      await this.page.evaluate(() => { localStorage.clear() }) // Clear localStorage to reset client-side data
       await this.page.reload() // Reload to apply changes
+    } catch (error) {
+      throw new Error(`Failed to reset application data: ${error instanceof Error ? error.message : String(error)}`)
+    }
   }
 
   /**
