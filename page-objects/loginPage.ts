@@ -53,14 +53,20 @@ export class LoginPage extends HelperBase {
   }
 
   async getErrorMessage(): Promise<string> {
-    await this.errorMessage.waitFor({ state: 'visible' })
-    const errorMessage = await this.errorMessage.textContent()
+    // Some browsers (e.g., WebKit) may not make the element visible immediately
+    // but text is attached quickly. First wait for attachment, then fall back to visibility.
+    await this.errorMessage.waitFor({ state: 'attached' })
+    let text = await this.errorMessage.textContent()
+    text = (text || '').trim()
+    if (text.length > 0) return text
 
-    if (!errorMessage || errorMessage.trim() === '') {
+    await this.errorMessage.waitFor({ state: 'visible' })
+    const visibleText = (await this.errorMessage.textContent()) || ''
+    const trimmed = visibleText.trim()
+    if (!trimmed) {
       throw new Error('Error message text is empty')
     }
-
-    return errorMessage.trim()
+    return trimmed
   }
 
   async inputEmailAndPassword(email: string, password: string) {

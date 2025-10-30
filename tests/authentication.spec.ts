@@ -106,6 +106,7 @@ test.describe('invalid login scenarios', () => {
     await expect(pm.onLoginPage().errorMessage, { message: 'Missing error for wrong password with valid email' }).toContainText('Invalid email or password');
   });
 
+  // include browserName in the test name to help with cross-browser testing
   test('should display native HTML5 form validation for empty Email', async ({ page }) => {
     const pm = new PageManager(page);
 
@@ -114,10 +115,16 @@ test.describe('invalid login scenarios', () => {
 
     await expect(pm.onLoginPage().errorMessage, { message: 'App-level error should not appear for empty email' }).toBeHidden();
 
-    // validate native HTML5 form validation
-    const emailValidation = await pm.onLoginPage().emailInput.evaluate((el: any) => (el as HTMLInputElement).validationMessage);
-    expect(emailValidation, 'Missing native HTML5 validation message on Email').toContain('Please fill out this field');
+    // Cross-browser: trigger validity UI (Safari may not populate message until reportValidity())
+    const validity = await pm.onLoginPage().emailInput.evaluate((el: any) => {
+      const input = el as HTMLInputElement;
+      input.reportValidity();
+      return { valid: input.checkValidity(), message: input.validationMessage };
+    });
+    expect(validity.valid, 'Email input should be invalid when empty').toBe(false);
+    expect((validity.message || '').trim().length, 'Expected a non-empty native validation message').toBeGreaterThan(0);
   });
+
 
   test('should display native HTML5 form validation for empty Password', async ({ page }) => {
     const pm = new PageManager(page);
@@ -127,8 +134,13 @@ test.describe('invalid login scenarios', () => {
 
     await expect(pm.onLoginPage().errorMessage, { message: 'App-level error should not appear for empty password' }).toBeHidden();
 
-    const passwordValidation = await pm.onLoginPage().passwordInput.evaluate((el: any) => (el as HTMLInputElement).validationMessage);
-    expect(passwordValidation, 'Missing native HTML5 validation message on Password').toContain('Please fill out this field');
+    const validity = await pm.onLoginPage().passwordInput.evaluate((el: any) => {
+      const input = el as HTMLInputElement;
+      input.reportValidity();
+      return { valid: input.checkValidity(), message: input.validationMessage };
+    });
+    expect(validity.valid, 'Password input should be invalid when empty').toBe(false);
+    expect((validity.message || '').trim().length, 'Expected a non-empty native validation message').toBeGreaterThan(0);
   });
 });
 
