@@ -14,9 +14,7 @@ test.describe('valid login scenarios', () => {
       await pm.onLoginPage().inputEmailAndPassword('admin@test.com', 'Admin123!'); // eliminate hardcoding asap
       await pm.onLoginPage().loginButton.click();
 
-      await expect(pm.onDashboardPage().dashboardTitle, { // find another way to assert login success
-        message: 'Dashboard title should be visible after successful login' 
-      }).toBeVisible();
+      await expect(pm.onNavigationBar().logoutButton, { message: 'Failed to login, no Logout button found' }).toBeVisible();
   })
 })
 
@@ -26,7 +24,7 @@ test.describe('invalid login scenarios', () => {
     await pm.navigateTo().loginPage();
   });
 
-  test('should fail to login and display error message', async ({ page }) => {
+  test('should display error message when login fails due to invalid credentials', async ({ page }) => {
     const pm = new PageManager(page);
 
     await pm.onLoginPage().inputEmailAndPassword('invalid@test.com', 'InvalidPassword');
