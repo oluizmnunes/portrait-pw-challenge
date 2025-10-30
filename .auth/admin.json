@@ -1,0 +1,35 @@
+{
+  "cookies": [
+    {
+      "name": "auth_token",
+      "value": "1",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1761884134,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "user_session",
+      "value": "{%22id%22:%221%22%2C%22email%22:%22admin@test.com%22%2C%22name%22:%22Admin%20User%22%2C%22role%22:%22admin%22}",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1761884134,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "http://localhost:3456",
+      "localStorage": [
+        {
+          "name": "qa_challenge_products",
+          "value": "[{\"id\":\"1\",\"sku\":\"LAP-001\",\"name\":\"Laptop Pro 15\\\"\",\"description\":\"High-performance laptop with 16GB RAM and 512GB SSD\",\"price\":1299.99,\"stock\":15,\"category\":\"Electronics\",\"lowStockThreshold\":5,\"createdAt\":\"2024-01-15\",\"updatedAt\":\"2024-01-15\"},{\"id\":\"2\",\"sku\":\"MOU-002\",\"name\":\"Wireless Mouse\",\"description\":\"Ergonomic wireless mouse with precision tracking\",\"price\":29.99,\"stock\":45,\"category\":\"Accessories\",\"lowStockThreshold\":10,\"createdAt\":\"2024-01-16\",\"updatedAt\":\"2024-01-16\"},{\"id\":\"3\",\"sku\":\"KEY-003\",\"name\":\"Mechanical Keyboard\",\"description\":\"RGB backlit mechanical keyboard with blue switches\",\"price\":89.99,\"stock\":3,\"category\":\"Accessories\",\"lowStockThreshold\":5,\"createdAt\":\"2024-01-17\",\"updatedAt\":\"2024-01-17\"},{\"id\":\"4\",\"sku\":\"MON-004\",\"name\":\"27\\\" 4K Monitor\",\"description\":\"Ultra HD monitor with HDR support\",\"price\":449.99,\"stock\":8,\"category\":\"Electronics\",\"lowStockThreshold\":3,\"createdAt\":\"2024-01-18\",\"updatedAt\":\"2024-01-18\"},{\"id\":\"5\",\"sku\":\"CAB-005\",\"name\":\"USB-C Cable\",\"description\":\"High-speed USB-C to USB-C cable, 2m\",\"price\":19.99,\"stock\":2,\"category\":\"Accessories\",\"lowStockThreshold\":10,\"createdAt\":\"2024-01-19\",\"updatedAt\":\"2024-01-19\"}]"
+        }
+      ]
+    }
+  ]
+}

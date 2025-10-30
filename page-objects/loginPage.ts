@@ -62,4 +62,9 @@ export class LoginPage extends HelperBase {
 
     return errorMessage.trim()
   }
+
+  async inputEmailAndPassword(email: string, password: string) {
+    await this.emailInput.fill(email)
+    await this.passwordInput.fill(password)
+  }
 }

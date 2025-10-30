@@ -11,9 +11,6 @@ test.describe('Product Lifecycle - Example', () => {
     const pm = new PageManager(page);
     await pm.onProductsPage().resetApplicationData();
 
-    
-    await pm.onLoginPage().login('admin@test.com', 'Admin123!'); // eliminate hardcoding asap
-    await pm.onLoginPage().loginButton.click();
     await pm.onNavigationBar().navigateToProducts();
   });
 
@@ -157,9 +154,7 @@ test.describe('Form Validation - Negative Tests', () => {
     await pm.onProductsPage().resetApplicationData();
 
     await pm.navigateTo().loginPage();
-    await pm.onLoginPage().login('admin@test.com', 'Admin123!'); // eliminate hardcoding asap
-    await pm.onLoginPage().loginButton.click();
-    
+    // Auth state reused; proceed directly
     await pm.navigateTo().productsPage();
     await expect(page).toHaveURL('/products')
     await expect(pm.onProductsPage().addProductButton).toBeVisible()
