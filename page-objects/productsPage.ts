@@ -48,10 +48,7 @@ export class ProductsPage extends HelperBase {
     this.productForm = page.getByTestId('product-form')
   }
 
-  async createProduct(product: { sku: string; name: string; description: string; price: number; stock: number; category: string; lowStockThreshold: number }) {
-    await this.page.goto('/products')
-    await this.addProductButton.click()
-    await this.page.waitForURL('/products/new')
+  async fillProductForm(product: { sku: string; name: string; description: string; price: number; stock: number; category: string; lowStockThreshold: number }) {
     await this.skuInput.fill(product.sku)
     await this.nameInput.fill(product.name)
     await this.descriptionInput.fill(product.description)
@@ -59,6 +56,13 @@ export class ProductsPage extends HelperBase {
     await this.stockInput.fill(product.stock.toString())
     await this.categoryInput.selectOption(product.category)
     await this.thresholdInput.fill(product.lowStockThreshold.toString())
+  }
+
+  async createProduct(product: { sku: string; name: string; description: string; price: number; stock: number; category: string; lowStockThreshold: number }) {
+    await this.page.goto('/products')
+    await this.addProductButton.click()
+    await this.page.waitForURL('/products/new')
+    await this.fillProductForm(product)
     await this.saveButton.click()
     await this.page.waitForURL('/products')
   }

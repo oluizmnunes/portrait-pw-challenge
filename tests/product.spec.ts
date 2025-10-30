@@ -51,13 +51,8 @@ test.describe('Products - Business Rules', () => {
       pm.onProductsPage().addProductButton.click()
     ]);
 
-    await pm.onProductsPage().skuInput.fill(product.sku);
-    await pm.onProductsPage().nameInput.fill(`${product.name} Copy`);
-    await pm.onProductsPage().descriptionInput.fill(product.description);
-    await pm.onProductsPage().priceInput.fill(String(product.price));
-    await pm.onProductsPage().stockInput.fill(String(product.stock));
-    await pm.onProductsPage().categoryInput.selectOption('Electronics');
-    await pm.onProductsPage().thresholdInput.fill(String(product.lowStockThreshold));
+    const duplicate = { ...product, name: `${product.name} Copy`, category: 'Electronics' as any }
+    await pm.onProductsPage().fillProductForm(duplicate);
     await pm.onProductsPage().saveButton.click();
 
     // Business rule verification: table must still contain only one row with that SKU
