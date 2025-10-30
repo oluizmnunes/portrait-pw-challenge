@@ -131,3 +131,35 @@ test.describe('invalid login scenarios', () => {
     expect(passwordValidation, 'Missing native HTML5 validation message on Password').toContain('Please fill out this field');
   });
 });
+
+test.describe('password visibility toggle', () => {
+  test.use({ storageState: undefined })
+  test.beforeEach(async ({ page }) => {
+    const pm = new PageManager(page);
+    await pm.navigateTo().loginPage();
+  })
+
+  test('should hide password by default and show when toggled', async ({ page }) => {
+    const pm = new PageManager(page);
+
+    await pm.onLoginPage().inputEmailAndPassword('user@example.com', 'Secret123!')
+
+    const initiallyVisible = await pm.onLoginPage().isPasswordVisible()
+    expect(initiallyVisible, 'Password should be hidden by default').toBe(false)
+
+    await pm.onLoginPage().togglePasswordVisibility()
+    const afterToggleVisible = await pm.onLoginPage().isPasswordVisible()
+    expect(afterToggleVisible, 'Password should become visible after toggling').toBe(true)
+  })
+
+  test('should toggle password visibility back to hidden when clicked again', async ({ page }) => {
+    const pm = new PageManager(page);
+
+    await pm.onLoginPage().inputEmailAndPassword('user@example.com', 'Secret123!')
+    await pm.onLoginPage().togglePasswordVisibility()
+    expect(await pm.onLoginPage().isPasswordVisible(), 'Password should be visible after first toggle').toBe(true)
+
+    await pm.onLoginPage().togglePasswordVisibility()
+    expect(await pm.onLoginPage().isPasswordVisible(), 'Password should be hidden after second toggle').toBe(false)
+  })
+})
