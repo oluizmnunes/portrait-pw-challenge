@@ -6,6 +6,7 @@ import { LoginPage } from '../page-objects/loginPage';
 import { DashboardPage } from '../page-objects/dashboardPage';
 import { ProductsPage } from '../page-objects/productsPage';
 import { InventoryPage } from '../page-objects/inventoryPage';
+import { NavigationBar } from '../page-objects/navigationBar';
 
 export class PageManager{
     private readonly page: Page;
@@ -14,6 +15,7 @@ export class PageManager{
     private readonly dashboardPage: DashboardPage;
     private readonly productsPage: ProductsPage;
     private readonly inventoryPage: InventoryPage;
+    private readonly navBar: NavigationBar;
 
     constructor(page: Page){
         // Initialize all page objects. 
@@ -26,6 +28,7 @@ export class PageManager{
         this.dashboardPage = new DashboardPage(this.page);
         this.productsPage = new ProductsPage(this.page);
         this.inventoryPage = new InventoryPage(this.page);
+        this.navBar = new NavigationBar(this.page);
     }
 
     // Now we need to create methods to return the instances of the page objects
@@ -47,5 +50,9 @@ export class PageManager{
 
     onInventoryPage(): InventoryPage {
         return this.inventoryPage;
+    }
+
+    onNavigationBar(): NavigationBar {
+        return this.navBar;
     }
 }
