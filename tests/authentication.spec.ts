@@ -12,6 +12,21 @@ test.describe('valid login scenarios', () => {
     await pm.navigateTo().dashboardPage()
   })
 
+  test('should keep login time to authenticated state under 3 seconds', async ({ page }) => {
+    const pm = new PageManager(page);
+
+    // Ensure logged-out state without failing if already logged out
+    try { await pm.onNavigationBar().logout() } catch {}
+    await pm.navigateTo().loginPage()
+
+    const start = Date.now()
+    await pm.onLoginPage().login(ADMIN_EMAIL, ADMIN_PASSWORD)
+    await expect(pm.onNavigationBar().logoutButton).toBeVisible()
+    const elapsedMs = Date.now() - start
+
+    expect(elapsedMs).toBeLessThan(3000)
+  })
+
   test('should login successfully', async ({ page }) => {
     const pm = new PageManager(page);
     await expect(pm.onNavigationBar().logoutButton, { message: 'Failed to login, no Logout button found' }).toBeVisible();
