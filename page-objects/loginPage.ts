@@ -19,9 +19,14 @@ export class LoginPage extends HelperBase {
     this.passwordToggle = page.getByTestId('password-toggle')
   }
 
-  async inputEmailAndPassword(email: string, password: string) {
+  async login(email: string, password: string): Promise<void> {
     await this.emailInput.fill(email)
     await this.passwordInput.fill(password)
+    await Promise.all([
+      this.page.waitForURL('/dashboard'),
+      this.loginButton.click()
+    ])
+    await this.page.getByTestId('logout-button').waitFor({ state: 'visible' })
   }
 
   // TODO: Candidates should implement these methods

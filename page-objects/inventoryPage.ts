@@ -12,6 +12,8 @@ export class InventoryPage extends HelperBase {
   readonly adjustmentError: Locator
   readonly confirmAdjustButton: Locator
   readonly cancelAdjustButton: Locator
+  // Alerts/indicators
+  readonly lowStockAlert: Locator
 
   constructor(page: Page) {
     super(page);
@@ -21,5 +23,10 @@ export class InventoryPage extends HelperBase {
     this.adjustmentError = page.getByTestId('adjustment-error')
     this.confirmAdjustButton = page.getByTestId('confirm-adjust-button')
     this.cancelAdjustButton = page.getByTestId('cancel-adjust-button')
+    this.lowStockAlert = page.getByTestId('low-stock-alert')
+  }
+
+  getProductRowByText(text: string): Locator {
+    return this.inventoryRows.filter({ hasText: text })
   }
 }

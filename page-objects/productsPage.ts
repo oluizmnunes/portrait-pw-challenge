@@ -82,7 +82,7 @@ export class ProductsPage extends HelperBase {
     await this.confirmDeleteButton.click()
   }
 
-  productRowByText(text: string): Locator {
+  getProductRowByText(text: string): Locator {
     return this.page.locator('[data-testid^="product-row-"]').filter({ hasText: text })
   }
 }
