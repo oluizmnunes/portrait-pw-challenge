@@ -58,5 +58,3 @@ export const test = authTest.extend<ProductFixtures>({
 })
 
 export const expect = baseExpect
-
-

@@ -5,7 +5,7 @@
       "value": "1",
       "domain": "localhost",
       "path": "/",
-      "expires": 1761906797,
+      "expires": 1761939017,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
@@ -15,7 +15,7 @@
       "value": "{%22id%22:%221%22%2C%22email%22:%22admin@test.com%22%2C%22name%22:%22Admin%20User%22%2C%22role%22:%22admin%22}",
       "domain": "localhost",
       "path": "/",
-      "expires": 1761906797,
+      "expires": 1761939017,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
