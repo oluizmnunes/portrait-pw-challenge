@@ -2,13 +2,33 @@
 
 ## Folder structure (high-level)
 
-- app/ – Next.js application (login, dashboard, products, inventory, lib)
-- page-objects/ – Playwright Page Objects (Login, Products, Inventory, Navbar, Navigation, Dashboard, helpers, PageManager)
-- tests/ – Test specs (authentication, product, inventory)
-- fixtures/ – Custom Playwright fixtures (auth, products)
-- data/ – Test data
-- .github/workflows/ – CI configuration (ci.yml)
-- playwright.config.ts – Playwright configuration (projects, server, defaults)
+```text
+portrait-qa-automation-test/
+├── fixtures/
+│   ├── auth.ts
+│   └── products.ts
+├── page-objects/
+│   ├── dashboardPage.ts
+│   ├── helperBase.ts
+│   ├── inventoryPage.ts
+│   ├── loginPage.ts
+│   ├── navigationBar.ts
+│   ├── navigationPage.ts
+│   ├── pageManager.ts
+│   └── productsPage.ts
+├── tests/
+│   ├── authentication.spec.ts
+│   ├── inventory.spec.ts
+│   └── product.spec.ts
+├── data/
+│   └── test-products.json
+├── playwright.config.ts
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── README.md
+└── SOLUTION.md
+```
 
 ## Testing approach and framework decisions
 
